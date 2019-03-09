@@ -2,13 +2,16 @@
 <html>
 <head>
   <title>Chicago Graffiti Removal</title>
-  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDFR6xz40awZdqt1pvi6zxE6AquU-Nn-Yc&callback=initMap"type="text/javascript"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
   <meta name="viewport" content="initial-scale=1.0">
   <meta charset="utf-8">
   <style>
     #map  {
-      height: 100%;
+      min-height: 1000px;
+      width: 100%;
+      height:100%;
     }
     html, body  {
       height: 100%;
@@ -19,9 +22,55 @@
 
 </head>
 <body>
-  <div id="map">
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+		<a class="navbar-brand" href="#">Navbar</a>
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+    </button>
+  <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <a class="nav-link" href="#home">Home <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#screen2">Screen 2</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#screen3">Screen 3</a>
+      </li>
+    </ul>
+  </div>
+  </nav>
+  <div class="content" id="home">
+    Home page
+  </div>
+  <div class="content" id="screen2">
+    <div id="map">
+    </div>
+  </div>
+  <div class="content" id="screen3">
+    This is screen 3
   </div>
 
+  <script>
+  $(document).ready(function() {
+
+      function hideScreens() {
+        $(".content").hide();
+      }
+
+      $(".nav-link").on("click", function(){
+        hideScreens();
+        var target = $(this).attr("href");
+        $(target).show();
+
+        if (target == "#screen2") {
+          initMap();
+        }
+      });
+
+  });
+  </script>
   <script>
     var map;
     function initMap() {
@@ -48,12 +97,22 @@
 
       var iconColor;
 
+      var contentString = '<div id="content">' +
+                  '<p><b>Street Address</b>: ' + v.street_address + '</p>' +
+                  '<p><b>Service Request #</b>: ' + v.service_request_number + '</p>' +
+                  '<p><b>Location</b>: Latitude: ' + v.latitude + ', Longitude: ' + v.longitude + '</p>' +
+                  '<p><b>Surface</b>: ' + v.what_type_of_surface_is_the_graffiti_on_ + '</p>' +
+                  '<p><b>Date Created</b>: ' + v.creation_date + '</p>' +
+                  '<p><b>Status</b>: ' + v.status + '</p>';
+
       // Uses green icon to show the graffiti removal was completed
       if (v.status == "Completed")  {
         iconColor = 'http://maps.google.com/mapfiles/ms/icons/green-dot.png';
+        contentString += '<p><b>Completion Date:</b> ' + v.completion_date + '</p>' + '</div>';
       }
       else {
         iconColor = 'http://maps.google.com/mapfiles/ms/icons/red-dot.png';
+        contentString += '</div>';
       }
 
       var marker = new google.maps.Marker({
@@ -65,13 +124,14 @@
       });
 
       var infowindow = new google.maps.InfoWindow({
-        content: v.status,
+        content:contentString,
       });
       marker.addListener('click', function() {
         infowindow.open(map, marker);
       });
     });
   }
-  </script>
+</script>
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDFR6xz40awZdqt1pvi6zxE6AquU-Nn-Yc&callback=initMap"type="text/javascript"></script>
 </body>
 </html>
