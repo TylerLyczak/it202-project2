@@ -4,7 +4,9 @@
   <title>Chicago Graffiti Removal</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+  <script src="semantic/dist/semantic.min.js"></script>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <link rel="stylesheet" type="text/css" href="semantic/dist/semantic.min.css">
   <meta name="viewport" content="initial-scale=1.0">
   <meta charset="utf-8">
   <style>
@@ -14,46 +16,135 @@
       height:100%;
     }
     html, body  {
-      height: 100%;
+      /*height: 100%;
       margin: 0;
-      padding: 0;
+      padding: 0;*/
+      background-color: #323639;
+    }
+    #searchDiv  {
+      padding: 20px;
+      margin: auto;
     }
   </style>
 
 </head>
 <body>
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-		<a class="navbar-brand" href="#">Navbar</a>
+		<a class="navbar-brand" href="#">Chicago Graffiti Removal</a>
 		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
     </button>
   <div class="collapse navbar-collapse" id="navbarNav">
     <ul class="navbar-nav">
       <li class="nav-item">
-        <a class="nav-link" href="#home">Home <span class="sr-only">(current)</span></a>
+        <a class="nav-link" href="#searchScreen">Search <span class="sr-only">(current)</span></a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="#screen2">Screen 2</a>
+        <a class="nav-link" href="#mapScreen">Map</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="#screen3">Screen 3</a>
+        <a class="nav-link" href="#listScreen">List</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#aboutScreen">About</a>
       </li>
     </ul>
   </div>
   </nav>
-  <div class="content" id="home">
-    Home page
+  <div class="content" id="searchScreen">
+    <div id="searchDiv">
+      <div class="ui inverted segment">
+        <div class="ui search">
+          <div class="ui icon input">
+            <input class="prompt" id="wardNum" type="text" placeholder="Search wards...">
+            <i class="search icon"></i>
+          </div>
+          <div class="results"></div>
+        </div>
+
+        <div class="ui selection dropdown">
+          <input type="hidden" name="status" id="statusNum">
+          <i class="dropdown icon"></i>
+          <div class="default text">Status</div>
+          <div class="menu">
+            <div class="item" data-value="0">Completed</div>
+            <div class="item" data-value="1">Open</div>
+            <div class="item" data-value="2">Both</div>
+          </div>
+        </div>
+
+        <button id="getFormData" class="ui inverted button">Submit</button>
+      </div>
+    </div>
   </div>
-  <div class="content" id="screen2">
+
+  <div class="content" id="mapScreen">
     <div id="map">
     </div>
   </div>
-  <div class="content" id="screen3">
+  <div class="content" id="listScreen">
     This is screen 3
+  </div>
+  <div class="content" id="aboutScreen">
+    About me
   </div>
 
   <script>
+  var ward = -1;
+  var status = -1;
+
   $(document).ready(function() {
+
+      $('.ui.dropdown')
+        .dropdown({
+          onChange: function(value, text) {
+            var text = JSON.stringify(text);
+            var value = JSON.stringify(value);
+            $("#listScreen").html(text + "<br/>" + value);
+          }
+      });
+
+      var content = [
+        { title: '0' },
+        { title: '1' },
+        { title: '2' },
+        { title: '3' },
+        { title: '4' },
+        { title: '5' },
+        { title: '6' },
+        { title: '7' },
+        { title: '8' },
+        { title: '9' },
+        { title: '10' },
+        { title: '11' },
+        { title: '12' },
+        { title: '13' },
+        { title: '14' },
+        { title: '15' },
+        { title: '16' },
+        { title: '17' },
+        { title: '18' },
+        { title: '19' },
+        { title: '20' },
+        { title: '21' },
+        { title: '22' },
+        { title: '23' }
+        // etc
+      ];
+
+      $('.ui.search')
+        .search({
+        source: content
+      });
+
+      $("#getFormData").on("click", function()  {
+        clearMarkers();
+        ward = $('#wardNum').val();
+        status = $('#statusNum').val();
+        console.log(ward);
+        console.log(status);
+        initMap();
+      });
 
       function hideScreens() {
         $(".content").hide();
@@ -64,40 +155,65 @@
         var target = $(this).attr("href");
         $(target).show();
 
-        if (target == "#screen2") {
+        if (target == "mapScreen") {
           initMap();
         }
+        // Add query to search
       });
 
   });
   </script>
   <script>
     var map;
+    var markers = [];
+
     function initMap() {
       var chicago = {lat: 41.8781, lng: -87.6298}
       map = new google.maps.Map(document.getElementById('map'), {
       center: {lat: chicago.lat, lng: chicago.lng},
       zoom: 10
-    });
+      });
 
     $.get("https://data.cityofchicago.org/resource/cdmx-wzbz.json",
 
       function(response) {
-        //console.log("in data callback");
         var data = response;
-        createMarkers(map, data );
+        createMarkers(map, data);
       });
-  }
+    }
 
   function createMarkers (map, data) {
-    console.log(data);
     $.each(data, function(i,v) {
+      //console.log(v.status);
+      //alert(ward);
+      if (ward == -1 || ward == undefined) {
+      } else if (ward != v.ward)  {
+        return;
+      }
+
+      var statusPass = false;
+      var statusString;
+      var statusStringDup;
+      if (status == -1 || status == undefined || status == 2) {
+        statusString = null;
+        statusPass = true;
+      } else if (status == 0) {
+        statusString = "Completed";
+      } else if (status == 1) {
+        statusString = "Open";
+      }
+      statusStringDup = statusString + " - Dup";
+
+      if (statusString == v.status || statusStringDup == v.status || statusPass == true)  {
+      } else {
+        return;
+      }
 
       var location = {lat: parseFloat(v.latitude), lng: parseFloat(v.longitude) }
 
       var iconColor;
 
-      var contentString = '<div id="content">' +
+      var contentString = '<div id="data">' +
                   '<p><b>Street Address</b>: ' + v.street_address + '</p>' +
                   '<p><b>Service Request #</b>: ' + v.service_request_number + '</p>' +
                   '<p><b>Location</b>: Latitude: ' + v.latitude + ', Longitude: ' + v.longitude + '</p>' +
@@ -106,7 +222,7 @@
                   '<p><b>Status</b>: ' + v.status + '</p>';
 
       // Uses green icon to show the graffiti removal was completed
-      if (v.status == "Completed")  {
+      if (v.status == "Completed" || v.status == "Completed - Dup")  {
         iconColor = 'http://maps.google.com/mapfiles/ms/icons/green-dot.png';
         contentString += '<p><b>Completion Date:</b> ' + v.completion_date + '</p>' + '</div>';
       }
@@ -118,8 +234,7 @@
       var marker = new google.maps.Marker({
         position: location,
         map: map,
-        title: 'Lol',
-        //color: "#56f442"
+        title: v.ward,
         icon: iconColor
       });
 
@@ -130,6 +245,21 @@
         infowindow.open(map, marker);
       });
     });
+  }
+
+  function clearMarkers() {
+    setMapOnAll(null);
+  }
+
+  function deleteMarkers() {
+    clearMarkers();
+    markers = [];
+  }
+
+  function setMapOnAll(map) {
+    for (var i = 0; i < markers.length; i++) {
+      markers[i].setMap(map);
+    }
   }
 </script>
 <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDFR6xz40awZdqt1pvi6zxE6AquU-Nn-Yc&callback=initMap"type="text/javascript"></script>
