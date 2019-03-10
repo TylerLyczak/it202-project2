@@ -6,6 +6,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
   <script src="semantic/dist/semantic.min.js"></script>
   <script src="https://unpkg.com/dexie@latest/dist/dexie.js"></script>
+  <script type="text/javascript" src="scripts/app.js"></script>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
   <link rel="stylesheet" type="text/css" href="semantic/dist/semantic.min.css">
   <meta name="viewport" content="initial-scale=1.0">
@@ -75,6 +76,7 @@
   <div class="content" id="searchScreen">
     <div id="searchDiv">
       <div class="ui inverted segment">
+        <h3>Search For Ward Number</h3>
         <div class="ui search">
           <div class="ui icon input">
             <input class="prompt" id="wardNum" type="text" placeholder="Search wards...">
@@ -82,7 +84,9 @@
           </div>
           <div class="results"></div>
         </div>
-
+      </div>
+      <div class="ui inverted segment">
+        <h3>Selected If Request Was Completed</h3>
         <div class="ui selection dropdown">
           <input type="hidden" name="status" id="statusNum">
           <i class="dropdown icon"></i>
@@ -93,7 +97,8 @@
             <div class="item" data-value="2">Both</div>
           </div>
         </div>
-
+      </div>
+      <div class="ui inverted segment">
         <button id="getFormData" class="ui inverted button">Submit</button>
       </div>
     </div>
@@ -129,12 +134,17 @@
         <h2 class="italics">Github</h2>
         <p>To see more of my projects, please come look at my Github</p>
         <a href="https://github.com/TylerLyczak">
-        <img src="src/PNG/GitHub-Mark-Light-120px-plus.png">
+        <img src="images/GitHub-Mark-Light-120px-plus.png">
       </div>
     </div>
   </div>
 
   <script>
+  var db = new Dexie("request_database");
+  db.version(1).stores({
+      request: 'id++,wardNum,address,requestNum,latitude,longitude,surface,creationDate,status,completionDate'
+  });
+
   var ward = -1;
   var status = -1;
 
@@ -301,6 +311,12 @@
       marker.addListener('click', function() {
         infowindow.open(map, marker);
       });
+
+      db.request.clear();
+
+      db.request.put({wardNum: v.ward,address: v.street_address,requestNum: v.service_request_number,
+        latitude: v.latitude,longitude: v.longitude,surface: v.what_type_of_surface_is_the_graffiti_on_,
+        creationDate: v.creation_date,status: v.status,completionDate: v.completion_date})
 
       // Makes notes for the list page
 
