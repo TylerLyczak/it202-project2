@@ -41,7 +41,7 @@
 </head>
 <body>
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-		<a class="navbar-brand" href="#">Chicago Graffiti Removal</a>
+		<a class="navbar-brand" href="#mainPage">Chicago Graffiti Removal</a>
 		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
     </button>
@@ -62,6 +62,16 @@
     </ul>
   </div>
   </nav>
+
+  <div class="firstPage" id="mainPage">
+    <div class="ui inverted segment">
+      <h1 class="italics">Chicago Graffiti Removal</h1>
+      <p>This site shows all the graffiti removal request in Chicago</p>
+      <p>To get started, click on search to search by ward and if it has been completed or not</p>
+      <p>After that, you can click on Map and Info to see where the request are located</p>
+    </div>
+  </div>
+
   <div class="content" id="searchScreen">
     <div id="searchDiv">
       <div class="ui inverted segment">
@@ -130,6 +140,8 @@
 
   $(document).ready(function() {
 
+    hideScreens();
+
       $('.ui.dropdown')
         .dropdown({
           onChange: function(value, text) {
@@ -188,8 +200,17 @@
         $(".content").hide();
       }
 
+      function hideFirstScreen()  {
+        $(".firstPage").hide();
+      }
+
+      function showFirstScreen () {
+        $(".firstPage").show();
+      }
+
       $(".nav-link").on("click", function(){
         hideScreens();
+        hideFirstScreen();
         var target = $(this).attr("href");
         $(target).show();
 
@@ -221,8 +242,7 @@
 
   function createMarkers (map, data) {
     $.each(data, function(i,v) {
-      //console.log(v.status);
-      //alert(ward);
+
       if (ward == -1 || ward == undefined) {
       } else if (ward != v.ward)  {
         return;
