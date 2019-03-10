@@ -5,6 +5,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
   <script src="semantic/dist/semantic.min.js"></script>
+  <script src="https://unpkg.com/dexie@latest/dist/dexie.js"></script>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
   <link rel="stylesheet" type="text/css" href="semantic/dist/semantic.min.css">
   <meta name="viewport" content="initial-scale=1.0">
@@ -24,6 +25,16 @@
     #searchDiv  {
       padding: 20px;
       margin: auto;
+    }
+    #aboutMe  {
+      padding: 20px;
+      margin: auto;
+    }
+    .white  {
+      color: white;
+    }
+    .italics  {
+      font-style: italic;
     }
   </style>
 
@@ -83,10 +94,34 @@
     </div>
   </div>
   <div class="content" id="listScreen">
-    This is screen 3
+    <div id="listDiv">
+    </div>
   </div>
   <div class="content" id="aboutScreen">
-    About me
+    <div id="aboutMe">
+
+      <div class="ui inverted segment">
+        <h1 class="white">Chicago Graffiti Removal</h1>
+      </div>
+
+      <div class="ui inverted segment">
+        <h2 class="italics">About this app</h3>
+        <p>This app shows all the graffiti removal request in Chicago. This app allows
+          you to sort by wards and if they are completed or not.</p>
+      </div>
+
+      <div class="ui inverted segment">
+        <h2 class="italics">Developer</h2>
+        <p>Developer of this app is Tyler Lyczak of University of Illinois at Chicago</p>
+      </div>
+
+      <div class="ui inverted segment">
+        <h2 class="italics">Github</h2>
+        <p>To see more of my projects, please come look at my Github</p>
+        <a href="https://github.com/TylerLyczak">
+        <img src="src/PNG/GitHub-Mark-Light-120px-plus.png">
+      </div>
+    </div>
   </div>
 
   <script>
@@ -100,7 +135,7 @@
           onChange: function(value, text) {
             var text = JSON.stringify(text);
             var value = JSON.stringify(value);
-            $("#listScreen").html(text + "<br/>" + value);
+            //$("#listScreen").html(text + "<br/>" + value);
           }
       });
 
@@ -143,6 +178,7 @@
         status = $('#statusNum').val();
         console.log(ward);
         console.log(status);
+        $("#listDiv").empty();
         initMap();
       });
 
@@ -158,7 +194,6 @@
         if (target == "mapScreen") {
           initMap();
         }
-        // Add query to search
       });
 
   });
@@ -244,6 +279,44 @@
       marker.addListener('click', function() {
         infowindow.open(map, marker);
       });
+
+      // Makes notes for the list page
+
+      var masterDiv = $("<div>");
+      masterDiv.addClass("ui inverted segment");
+      masterDiv.addClass("noteDivs");
+
+      var strAdr = $("<p>");
+      strAdr.text("Street Address: " + v.street_address);
+      masterDiv.append(strAdr);
+
+      var svcReq = $("<p>");
+      svcReq.text("Service Request Number: " + v.service_request_number);
+      masterDiv.append(svcReq);
+
+      var loc = $("<p>");
+      loc.text("Location: Latitude: " + v.latitude + " Longitude: " + v.longitude);
+      masterDiv.append(loc);
+
+      var sur = $("<p>");
+      sur.text("Surface: " + v.what_type_of_surface_is_the_graffiti_on_);
+      masterDiv.append(sur);
+
+      var dteCret = $("<p>");
+      dteCret.text("Date Created: " + v.creation_date);
+      masterDiv.append(dteCret);
+
+      var stt = $("<p>");
+      stt.text("Status: " + v.status);
+      masterDiv.append(stt);
+
+      if (v.status == "Completed" || v.status == "Completed - Dup")  {
+        var cmpDte = $("<p>");
+        cmpDte.text("Completion Date: " + v.completion_date);
+        masterDiv.append(cmpDte);
+      }
+
+      $('#listDiv').append(masterDiv);
     });
   }
 
