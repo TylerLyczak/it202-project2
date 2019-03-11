@@ -9,6 +9,7 @@
   <script type="text/javascript" src="scripts/app.js"></script>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
   <link rel="stylesheet" type="text/css" href="semantic/dist/semantic.min.css">
+  <link rel="manifest" href="manifest.json">
   <meta name="viewport" content="initial-scale=1.0">
   <meta charset="utf-8">
   <style>
@@ -200,8 +201,6 @@
         clearMarkers();
         ward = $('#wardNum').val();
         status = $('#statusNum').val();
-        console.log(ward);
-        console.log(status);
         $("#listDiv").empty();
         initMap();
       });
@@ -241,7 +240,7 @@
       center: {lat: chicago.lat, lng: chicago.lng},
       zoom: 10
       });
-
+    db.request.clear();
     $.get("https://data.cityofchicago.org/resource/cdmx-wzbz.json",
 
       function(response) {
@@ -312,7 +311,6 @@
         infowindow.open(map, marker);
       });
 
-      db.request.clear();
 
       db.request.put({wardNum: v.ward,address: v.street_address,requestNum: v.service_request_number,
         latitude: v.latitude,longitude: v.longitude,surface: v.what_type_of_surface_is_the_graffiti_on_,
