@@ -1,6 +1,10 @@
 const staticAssets = [
   '/',
  '/index.html',
+ '/index.html#mapScreen',
+ '/index.html#listScreen',
+ '/index.html#aboutScreen',
+ '/index.html#mainPage',
  '/manifest.json',
  '/scripts',
  '/scripts/app.js',
