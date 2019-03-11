@@ -12,9 +12,9 @@ const staticAssets = [
  'styles/style.css',
  'images',
  'images/GitHub-Mark-Light-120px-plus.png',
+ 'images/green-dot.png',
+ 'images/red-dot.png',
  'images/icons',
- 'images/icons/green-dot.png',
- 'images/icons/red-dot.png',
  'images/icons/icon-72x72.png',
  'images/icons/icon-96x96.png',
  'images/icons/icon-128x128.png',
@@ -60,14 +60,14 @@ self.addEventListener('install', async event => {
 self.addEventListener('fetch', event => {
   const req = event.request;
   const url = new URL(req.url);
-  /*
+
   if(url.origin == location.origin) {
     event.respondWith(cacheFirst(req));
   } else {
     event.respondWith(networkFirst(req));
   }
   event.respondWith(cacheFirst(req));
-  */
+
 
 });
 

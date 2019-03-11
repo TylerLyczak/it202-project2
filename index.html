@@ -19,9 +19,6 @@
       height:100%;
     }
     html, body  {
-      /*height: 100%;
-      margin: 0;
-      padding: 0;*/
       background-color: #323639;
     }
     #searchDiv  {
@@ -141,6 +138,7 @@
   </div>
 
   <script>
+  // Initiallizes the database
   var db = new Dexie("request_database");
   db.version(1).stores({
       request: 'id++,wardNum,address,requestNum,latitude,longitude,surface,creationDate,status,completionDate'
@@ -158,10 +156,10 @@
           onChange: function(value, text) {
             var text = JSON.stringify(text);
             var value = JSON.stringify(value);
-            //$("#listScreen").html(text + "<br/>" + value);
           }
       });
-
+      // Used for the ward search dropdown
+      // Auto-fills the search with the correct ward
       var content = [
         { title: '0' },
         { title: '1' },
@@ -188,8 +186,32 @@
         { title: '22' },
         { title: '23' },
         { title: '24' },
-        { title: '25' }
-        // etc
+        { title: '25' },
+        { title: '26' },
+        { title: '27' },
+        { title: '28' },
+        { title: '29' },
+        { title: '30' },
+        { title: '31' },
+        { title: '32' },
+        { title: '33' },
+        { title: '34' },
+        { title: '35' },
+        { title: '36' },
+        { title: '37' },
+        { title: '38' },
+        { title: '39' },
+        { title: '40' },
+        { title: '41' },
+        { title: '42' },
+        { title: '43' },
+        { title: '44' },
+        { title: '45' },
+        { title: '46' },
+        { title: '47' },
+        { title: '48' },
+        { title: '49' },
+        { title: '50' }
       ];
 
       $('.ui.search')
@@ -251,12 +273,13 @@
 
   function createMarkers (map, data) {
     $.each(data, function(i,v) {
-
+      // If the ward if not selected, then it will load all wards
       if (ward == -1 || ward == undefined) {
       } else if (ward != v.ward)  {
         return;
       }
 
+      // This allows for "Completed - Dup" to be added to completed
       var statusPass = false;
       var statusString;
       var statusStringDup;
@@ -278,7 +301,7 @@
       var location = {lat: parseFloat(v.latitude), lng: parseFloat(v.longitude) }
 
       var iconColor;
-
+      // Makes a div for all the data required
       var contentString = '<div id="data">' +
                   '<p><b>Street Address</b>: ' + v.street_address + '</p>' +
                   '<p><b>Service Request #</b>: ' + v.service_request_number + '</p>' +
@@ -296,14 +319,14 @@
         iconColor = './images/red-dot.png';
         contentString += '</div>';
       }
-
+      // Addes a google maps marker
       var marker = new google.maps.Marker({
         position: location,
         map: map,
         title: v.ward,
         icon: iconColor
       });
-
+      // Addes the info window with the custom string
       var infowindow = new google.maps.InfoWindow({
         content:contentString,
       });
@@ -311,7 +334,7 @@
         infowindow.open(map, marker);
       });
 
-
+      // Adds the data to the database
       db.request.put({wardNum: v.ward,address: v.street_address,requestNum: v.service_request_number,
         latitude: v.latitude,longitude: v.longitude,surface: v.what_type_of_surface_is_the_graffiti_on_,
         creationDate: v.creation_date,status: v.status,completionDate: v.completion_date})
@@ -351,7 +374,7 @@
         cmpDte.text("Completion Date: " + v.completion_date);
         masterDiv.append(cmpDte);
       }
-
+      // Adds all the data to a div and adds it to the note page
       $('#listDiv').append(masterDiv);
     });
   }
