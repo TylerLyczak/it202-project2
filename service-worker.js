@@ -13,6 +13,8 @@ const staticAssets = [
  'images',
  'images/GitHub-Mark-Light-120px-plus.png',
  'images/icons',
+ 'images/icons/green-dot.png',
+ 'images/icons/red-dot.png',
  'images/icons/icon-72x72.png',
  'images/icons/icon-96x96.png',
  'images/icons/icon-128x128.png',
@@ -66,6 +68,7 @@ self.addEventListener('fetch', event => {
   }
   event.respondWith(cacheFirst(req));
   */
+
 });
 
 async function cacheFirst(req)  {
